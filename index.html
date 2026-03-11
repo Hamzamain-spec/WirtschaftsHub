@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WirtschaftsHub — Deutschlands Wirtschaftsmagazin</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--black:#0A0A0A;--dark:#111318;--panel:#1A1D24;--card:#1E2128;--border:#2A2D36;--accent:#E8C420;--red:#E84020;--blue:#2080E8;--white:#FFFFFF;--off:#F2F4F8;--muted:#6B7280;--light:#9CA3AF}
+body{font-family:'Inter',sans-serif;background:var(--dark);color:var(--white)}
+
+/* TOP BAR */
+.topbar{background:var(--black);border-bottom:1px solid var(--border);padding:8px 0}
+.topbar-inner{max-width:1280px;margin:0 auto;padding:0 32px;display:flex;justify-content:space-between;align-items:center}
+.topbar-left{display:flex;align-items:center;gap:20px}
+.topbar-tag{background:var(--accent);color:var(--black);font-size:9px;font-weight:800;letter-spacing:3px;padding:3px 10px;text-transform:uppercase}
+.topbar-text{font-size:11px;color:var(--muted);font-weight:400}
+.topbar-right{display:flex;gap:16px}
+.topbar-right a{font-size:11px;color:var(--muted);text-decoration:none;font-weight:500}
+.topbar-right a:hover{color:var(--accent)}
+
+/* HEADER */
+header{background:var(--black);border-bottom:1px solid var(--border)}
+.header-inner{max-width:1280px;margin:0 auto;padding:20px 32px;display:flex;align-items:center;justify-content:space-between}
+.logo{text-decoration:none}
+.logo-wrap{display:flex;align-items:baseline;gap:0}
+.logo-w{font-family:'Playfair Display',serif;font-size:36px;font-weight:800;color:var(--white);letter-spacing:-1px}
+.logo-hub{font-family:'Playfair Display',serif;font-size:36px;font-weight:800;color:var(--accent);letter-spacing:-1px}
+.logo-tag{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--muted);font-weight:500;margin-top:2px;display:block}
+.header-indicators{display:flex;gap:16px}
+.indicator{background:var(--panel);border:1px solid var(--border);padding:10px 16px;text-align:center}
+.ind-val{font-size:14px;font-weight:700;color:var(--white);display:flex;align-items:center;gap:4px}
+.ind-val.up{color:#22C55E}.ind-val.down{color:#EF4444}
+.ind-label{font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-top:2px}
+
+/* NAV */
+nav{background:var(--panel);border-bottom:2px solid var(--accent)}
+.nav-inner{max-width:1280px;margin:0 auto;padding:0 32px;display:flex;align-items:center}
+nav a{display:block;padding:13px 18px;color:var(--light);text-decoration:none;font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;transition:all 0.2s;border-bottom:2px solid transparent;margin-bottom:-2px}
+nav a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+
+/* TICKER */
+.ticker{background:var(--accent);overflow:hidden;display:flex}
+.ticker-label{background:var(--red);color:#fff;font-size:9px;font-weight:800;letter-spacing:3px;padding:9px 16px;white-space:nowrap;text-transform:uppercase;flex-shrink:0}
+.ticker-track{overflow:hidden;flex:1}
+.ticker-text{display:inline-block;white-space:nowrap;font-size:11px;color:var(--black);padding:9px 0;font-weight:700;animation:scroll 36s linear infinite;letter-spacing:0.5px}
+@keyframes scroll{0%{transform:translateX(100vw)}100%{transform:translateX(-100%)}}
+
+/* MAIN LAYOUT - different structure: featured + sidebar */
+.main-layout{max-width:1280px;margin:0 auto;padding:36px 32px;display:grid;grid-template-columns:1fr 340px;gap:28px}
+
+/* FEATURED ARTICLE */
+.featured-label{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.featured-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.featured-article{background:var(--card);border:1px solid var(--border);overflow:hidden;cursor:pointer;transition:border-color 0.3s;margin-bottom:28px}
+.featured-article:hover{border-color:var(--accent)}
+.featured-img{height:320px;position:relative;background:linear-gradient(135deg,#1A1D24,#2A2D36,#0A0A0A);display:flex;align-items:flex-end;padding:28px}
+.featured-img-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.85) 0%,rgba(0,0,0,0.2) 60%,transparent 100%)}
+.featured-cat{position:relative;z-index:1;background:var(--accent);color:var(--black);font-size:9px;font-weight:800;letter-spacing:2.5px;padding:4px 12px;text-transform:uppercase;display:inline-block;margin-bottom:10px}
+.featured-title{position:relative;z-index:1;font-family:'Playfair Display',serif;font-size:34px;font-weight:800;color:#fff;line-height:1.1;display:block}
+.featured-body{padding:24px 28px}
+.featured-excerpt{font-size:14px;color:var(--light);line-height:1.8;font-weight:300;margin-bottom:18px}
+.featured-meta{display:flex;align-items:center;gap:16px;padding-top:16px;border-top:1px solid var(--border)}
+.featured-author{display:flex;align-items:center;gap:8px}
+.author-dot{width:28px;height:28px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--black)}
+.author-name{font-size:12px;font-weight:600;color:var(--white)}
+.author-date{font-size:11px;color:var(--muted)}
+.featured-readmore{margin-left:auto;font-size:11px;font-weight:700;color:var(--accent);text-decoration:none;letter-spacing:1.5px;text-transform:uppercase;display:flex;align-items:center;gap:6px}
+.featured-readmore:hover{color:#fff}
+
+/* ARTICLE LIST (below featured) */
+.article-list{display:flex;flex-direction:column;gap:0}
+.list-item{display:grid;grid-template-columns:120px 1fr;gap:0;background:var(--card);border:1px solid var(--border);border-top:none;cursor:pointer;transition:border-color 0.2s;overflow:hidden}
+.list-item:first-child{border-top:1px solid var(--border)}
+.list-item:hover{border-color:var(--accent)}
+.list-thumb{height:90px;background:linear-gradient(135deg,var(--panel),var(--border));flex-shrink:0;position:relative}
+.list-thumb-bg{width:100%;height:100%;object-fit:cover}
+.list-body{padding:14px 18px;display:flex;flex-direction:column;justify-content:center;border-left:1px solid var(--border)}
+.list-cat{font-size:9px;font-weight:700;letter-spacing:2px;color:var(--accent);text-transform:uppercase;margin-bottom:5px}
+.list-title{font-size:14px;font-weight:700;color:var(--white);line-height:1.35;margin-bottom:5px}
+.list-meta{font-size:11px;color:var(--muted)}
+.lt1{background:linear-gradient(135deg,#1A3A6B,#0A1A3A)}
+.lt2{background:linear-gradient(135deg,#3A1A0A,#6B3A1A)}
+.lt3{background:linear-gradient(135deg,#0A2A0A,#1A5A1A)}
+.lt4{background:linear-gradient(135deg,#2A0A3A,#5A1A6B)}
+.lt5{background:linear-gradient(135deg,#1A1A0A,#3A3A0A)}
+
+/* SIDEBAR */
+.sidebar{display:flex;flex-direction:column;gap:20px}
+.widget{background:var(--card);border:1px solid var(--border)}
+.widget-head{background:var(--panel);padding:12px 18px;display:flex;align-items:center;gap:8px;border-bottom:2px solid var(--accent)}
+.widget-head-icon{font-size:14px}
+.widget-head-title{font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--white)}
+.widget-body{padding:18px}
+.side-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);cursor:pointer}
+.side-item:last-child{border-bottom:none;padding-bottom:0}
+.side-item:first-child{padding-top:0}
+.side-thumb{width:56px;height:56px;flex-shrink:0;border-radius:2px}
+.side-info{}
+.side-cat{font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--accent);text-transform:uppercase;margin-bottom:3px}
+.side-title{font-size:13px;font-weight:600;color:var(--white);line-height:1.35}
+.side-date{font-size:11px;color:var(--muted);margin-top:3px}
+.market-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}
+.market-row:last-child{border-bottom:none}
+.market-name{font-size:12px;font-weight:600;color:var(--white)}
+.market-sub{font-size:10px;color:var(--muted)}
+.market-val{text-align:right}
+.market-num{font-size:13px;font-weight:700;color:var(--white)}
+.market-change{font-size:11px;font-weight:600}
+.market-change.up{color:#22C55E}.market-change.down{color:#EF4444}
+.cat-tags{display:flex;flex-wrap:wrap;gap:8px}
+.cat-tag{background:var(--panel);border:1px solid var(--border);color:var(--light);font-size:11px;font-weight:600;padding:6px 14px;cursor:pointer;transition:all 0.2s;text-decoration:none;letter-spacing:0.5px}
+.cat-tag:hover{background:var(--accent);color:var(--black);border-color:var(--accent)}
+
+.empty-state{text-align:center;padding:60px 20px;color:var(--muted)}
+.empty-state h3{font-family:'Playfair Display',serif;font-size:24px;color:var(--white);margin-bottom:8px}
+.empty-state p{font-size:14px}
+
+footer{background:var(--black);border-top:1px solid var(--border);margin-top:40px}
+.footer-inner{max-width:1280px;margin:0 auto;padding:48px 32px;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px}
+.footer-brand .fl{font-family:'Playfair Display',serif;font-size:26px;font-weight:800;color:var(--white);margin-bottom:12px;display:flex;align-items:baseline}
+.footer-brand .fl span{color:var(--accent)}
+.footer-brand p{font-size:13px;line-height:1.7;color:var(--muted);font-weight:300}
+.footer-col h4{font-size:9px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+.footer-col a{display:block;color:var(--muted);text-decoration:none;font-size:13px;margin-bottom:8px}
+.footer-col a:hover{color:var(--white)}
+.footer-bottom{border-top:1px solid var(--border);max-width:1280px;margin:0 auto;padding:18px 32px;display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--muted)}
+.footer-bottom a{color:var(--muted);text-decoration:none;margin-left:16px}
+.footer-bottom a:hover{color:var(--accent)}
+.admin-link{position:fixed;bottom:20px;right:20px;background:var(--accent);color:var(--black);padding:10px 20px;font-size:11px;text-decoration:none;opacity:0.5;transition:opacity 0.2s;font-weight:800;letter-spacing:1px;text-transform:uppercase}
+.admin-link:hover{opacity:1}
+</style>
+</head>
+<body>
+<div class="topbar"><div class="topbar-inner"><div class="topbar-left"><span class="topbar-tag">⚡ Live</span><span class="topbar-text">DAX 18.420 &nbsp;▲ +0.4% &nbsp;·&nbsp; EUR/USD 1.0842 &nbsp;·&nbsp; WTI 74.80</span></div><div class="topbar-right"><a href="#">Anmelden</a><a href="#">Newsletter</a><a href="#">Über uns</a></div></div></div>
+<header><div class="header-inner">
+  <a href="index.html" class="logo"><div class="logo-wrap"><span class="logo-w">Wirtschafts</span><span class="logo-hub">Hub</span></div><span class="logo-tag">Deutschlands Wirtschaftsmagazin</span></a>
+  <div class="header-indicators">
+    <div class="indicator"><div class="ind-val up">▲ 18.420</div><div class="ind-label">DAX</div></div>
+    <div class="indicator"><div class="ind-val down">▼ 7.841</div><div class="ind-label">MDAX</div></div>
+    <div class="indicator"><div class="ind-val up">▲ 1.0842</div><div class="ind-label">EUR/USD</div></div>
+  </div>
+</div></header>
+<nav><div class="nav-inner">
+  <a href="index.html">Home</a><a href="index.html">Wirtschaft</a><a href="index.html">Finanzen</a>
+  <a href="index.html">Unternehmen</a><a href="index.html">Karriere</a><a href="index.html">Digitalisierung</a>
+  <a href="index.html">Ratgeber</a><a href="index.html">Märkte</a>
+</div></nav>
+<div class="ticker"><div class="ticker-label">📈 Märkte</div><div class="ticker-track"><span class="ticker-text">DAX 18.420 ▲ +0.4% &nbsp;·&nbsp; Siemens +1.2% &nbsp;·&nbsp; SAP -0.3% &nbsp;·&nbsp; Volkswagen +0.8% &nbsp;·&nbsp; Deutsche Bank -0.5% &nbsp;·&nbsp; BMW +1.1% &nbsp;·&nbsp; Allianz +0.6% &nbsp;·&nbsp; Bayer -0.9% &nbsp;·&nbsp; BASF +0.2% &nbsp;·&nbsp; Infineon +2.1%</span></div></div>
+
+<div class="main-layout">
+  <div class="main-col">
+    <div class="featured-label">Hauptartikel</div>
+    <div id="featured-wrap">
+      <div class="empty-state"><h3>Noch keine Artikel</h3><p>Erstelle deinen ersten Artikel im Admin-Bereich.</p></div>
+    </div>
+    <div id="list-wrap"></div>
+  </div>
+  <aside class="sidebar">
+    <div class="widget">
+      <div class="widget-head"><span class="widget-head-icon">📊</span><span class="widget-head-title">Märkte</span></div>
+      <div class="widget-body">
+        <div class="market-row"><div><div class="market-name">DAX</div><div class="market-sub">Frankfurt</div></div><div class="market-val"><div class="market-num">18.420</div><div class="market-change up">▲ +0.41%</div></div></div>
+        <div class="market-row"><div><div class="market-name">EUR/USD</div><div class="market-sub">Devisen</div></div><div class="market-val"><div class="market-num">1.0842</div><div class="market-change up">▲ +0.12%</div></div></div>
+        <div class="market-row"><div><div class="market-name">WTI Öl</div><div class="market-sub">Rohstoffe</div></div><div class="market-val"><div class="market-num">74.80</div><div class="market-change down">▼ -0.33%</div></div></div>
+        <div class="market-row"><div><div class="market-name">Gold</div><div class="market-sub">XAU/USD</div></div><div class="market-val"><div class="market-num">2.145</div><div class="market-change up">▲ +0.22%</div></div></div>
+      </div>
+    </div>
+    <div class="widget">
+      <div class="widget-head"><span class="widget-head-icon">📰</span><span class="widget-head-title">Neueste Artikel</span></div>
+      <div class="widget-body"><div id="sidebar-recent"></div></div>
+    </div>
+    <div class="widget">
+      <div class="widget-head"><span class="widget-head-icon">🏷</span><span class="widget-head-title">Ressorts</span></div>
+      <div class="widget-body"><div class="cat-tags">
+        <a href="#" class="cat-tag">Wirtschaft</a><a href="#" class="cat-tag">Finanzen</a>
+        <a href="#" class="cat-tag">Karriere</a><a href="#" class="cat-tag">Unternehmen</a>
+        <a href="#" class="cat-tag">Märkte</a><a href="#" class="cat-tag">Digitalisierung</a>
+        <a href="#" class="cat-tag">Ratgeber</a><a href="#" class="cat-tag">Steuern</a>
+      </div></div>
+    </div>
+  </aside>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand"><div class="fl">Wirtschafts<span>Hub</span></div><p>WirtschaftsHub ist Deutschlands unabhängiges Wirtschaftsmagazin. Täglich aktuelle Analysen, Marktdaten und Ratgeber für Unternehmer und Anleger.</p></div>
+    <div class="footer-col"><h4>Ressorts</h4><a href="#">Wirtschaft</a><a href="#">Finanzen</a><a href="#">Karriere</a><a href="#">Märkte</a></div>
+    <div class="footer-col"><h4>Service</h4><a href="#">Newsletter</a><a href="#">Marktdaten</a><a href="#">Ratgeber</a><a href="#">Stellenmarkt</a></div>
+    <div class="footer-col"><h4>Info</h4><a href="#">Über uns</a><a href="#">Impressum</a><a href="#">Datenschutz</a><a href="#">Kontakt</a></div>
+  </div>
+  <div class="footer-bottom"><span>&copy; 2026 WirtschaftsHub — Unabhängiges Wirtschaftsmagazin</span><div><a href="#">Impressum</a><a href="#">Datenschutz</a><a href="#">Kontakt</a></div></div>
+</footer>
+<a href="admin.html" class="admin-link">⚙ Admin</a>
+<script>
+const thumbs=['lt1','lt2','lt3','lt4','lt5'];
+const cats=['Wirtschaft','Finanzen','Unternehmen','Karriere','Digitalisierung','Märkte'];
+function loadPosts(){
+  const posts=JSON.parse(localStorage.getItem('db_posts')||'[]').slice().reverse();
+  const fw=document.getElementById('featured-wrap'),lw=document.getElementById('list-wrap'),sr=document.getElementById('sidebar-recent');
+  if(!posts.length)return;
+  // Featured (first post)
+  const p=posts[0];
+  const fd=new Date(p.date).toLocaleDateString('de-DE',{day:'numeric',month:'long',year:'numeric'});
+  const fex=p.content.replace(/<[^>]+>/g,'').substring(0,160)+'...';
+  const init=(p.author||'R').charAt(0).toUpperCase();
+  fw.innerHTML=`<div class="featured-article" onclick="location.href='post.html?id=${p.id}'">
+    <div class="featured-img"><div class="featured-img-overlay"></div><div>
+      <span class="featured-cat">${p.category||'Wirtschaft'}</span>
+      <span class="featured-title">${p.title}</span>
+    </div></div>
+    <div class="featured-body">
+      <div class="featured-excerpt">${fex}</div>
+      <div class="featured-meta">
+        <div class="featured-author"><div class="author-dot">${init}</div><div><div class="author-name">${p.author||'Redaktion'}</div><div class="author-date">${fd}</div></div></div>
+        <a class="featured-readmore" href="post.html?id=${p.id}">Weiterlesen →</a>
+      </div>
+    </div></div>`;
+  // List (rest)
+  lw.innerHTML='';
+  posts.slice(1,6).forEach((p,i)=>{
+    const date=new Date(p.date).toLocaleDateString('de-DE');
+    lw.innerHTML+=`<div class="list-item" onclick="location.href='post.html?id=${p.id}'">
+      <div class="list-thumb ${thumbs[i%thumbs.length]}"></div>
+      <div class="list-body">
+        <div class="list-cat">${p.category||'Wirtschaft'}</div>
+        <div class="list-title">${p.title}</div>
+        <div class="list-meta">${p.author||'Redaktion'} · ${date}</div>
+      </div></div>`;
+  });
+  // Sidebar
+  sr.innerHTML='';
+  posts.slice(0,4).forEach((p,i)=>{
+    const date=new Date(p.date).toLocaleDateString('de-DE');
+    sr.innerHTML+=`<div class="side-item" onclick="location.href='post.html?id=${p.id}'">
+      <div class="side-thumb ${thumbs[i%thumbs.length]}"></div>
+      <div class="side-info"><div class="side-cat">${p.category||'Wirtschaft'}</div><div class="side-title">${p.title}</div><div class="side-date">${date}</div></div>
+    </div>`;
+  });
+}
+loadPosts();
+</script>
+</body>
+</html>
