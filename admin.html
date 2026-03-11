@@ -165,6 +165,84 @@ z-index:2;
   </div>
 </div>
 <script>
+  /* ---------- GITHUB PERMANENT STORAGE OVERRIDE ---------- */
+
+const GH_USER = "YOUR_GITHUB_USERNAME";
+const GH_REPO = location.pathname.split("/")[1] || "YOUR_REPO_NAME";
+const GH_BRANCH = "main";
+const GH_TOKEN = "YOUR_GITHUB_TOKEN";
+const GH_FILE = "posts.json";
+
+/* load posts from github */
+async function ghLoad() {
+
+  try {
+
+    const r = await fetch(
+      `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}?ref=${GH_BRANCH}`,
+      { headers: { Authorization: "token " + GH_TOKEN } }
+    );
+
+    if (!r.ok) return [];
+
+    const d = await r.json();
+
+    return JSON.parse(atob(d.content));
+
+  } catch {
+    return [];
+  }
+
+}
+
+/* save posts to github */
+async function ghSave(posts) {
+
+  let sha = null;
+
+  try {
+
+    const r = await fetch(
+      `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`,
+      { headers: { Authorization: "token " + GH_TOKEN } }
+    );
+
+    if (r.ok) {
+      const d = await r.json();
+      sha = d.sha;
+    }
+
+  } catch {}
+
+  const body = {
+    message: "update articles",
+    content: btoa(JSON.stringify(posts, null, 2)),
+    branch: GH_BRANCH
+  };
+
+  if (sha) body.sha = sha;
+
+  await fetch(
+    `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`,
+    {
+      method: "PUT",
+      headers: {
+        Authorization: "token " + GH_TOKEN,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(body)
+    }
+  );
+
+}
+
+/* override old browser storage */
+
+window.getPosts = ghLoad;
+
+window.savePosts = ghSave;
+
+/* ------------------------------------------------------ */
 const PASS='germanadmin00#hamzauthority1';let editingId=null;
 function doLogin(){if(document.getElementById('pw-input').value===PASS){document.getElementById('login-screen').style.display='none';document.getElementById('admin-panel').style.display='block';loadDashboard();}else{document.getElementById('login-err').style.display='block';document.getElementById('pw-input').value='';}}
 function logout(){document.getElementById('login-screen').style.display='flex';document.getElementById('admin-panel').style.display='none';document.getElementById('pw-input').value='';}
