@@ -42,7 +42,7 @@ position:relative;
 overflow:hidden
 }
 
-/* FIXED */
+/* FIXED OVERLAY */
 .login-wrap::before{
 content:'';
 position:absolute;
@@ -146,8 +146,6 @@ padding:0 28px;
 border-bottom:2px solid var(--accent)
 }
 
-.al{display:flex;align-items:baseline}
-
 .admin-nav{display:flex;gap:4px}
 
 .admin-nav button{
@@ -166,21 +164,6 @@ border-color:var(--accent);
 color:var(--black)
 }
 
-.logout-btn{
-background:none;
-border:none;
-color:var(--muted);
-cursor:pointer
-}
-
-.view-btn{
-border:1px solid var(--border);
-color:var(--light);
-padding:7px 16px;
-text-decoration:none;
-font-size:10px
-}
-
 .admin-body{
 max-width:1100px;
 margin:0 auto;
@@ -189,31 +172,6 @@ padding:32px 28px
 
 .panel{display:none}
 .panel.active{display:block}
-
-.panel-title{
-font-family:'Playfair Display',serif;
-font-size:26px;
-margin-bottom:24px
-}
-
-.stats-row{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:14px;
-margin-bottom:28px
-}
-
-.stat-card{
-background:var(--card);
-border:1px solid var(--border);
-padding:24px
-}
-
-.stat-num{
-font-size:46px;
-font-weight:900;
-color:var(--accent)
-}
 
 .editor-grid{
 display:grid;
@@ -227,64 +185,33 @@ border:1px solid var(--border);
 padding:32px
 }
 
-.editor-side{
+.toolbar{
 display:flex;
-flex-direction:column;
-gap:12px
+gap:5px;
+flex-wrap:wrap;
+margin-bottom:12px
 }
 
-.side-box{
-background:var(--card);
+.toolbar button{
+background:var(--panel);
 border:1px solid var(--border);
-padding:20px
+padding:5px 12px;
+cursor:pointer;
+color:var(--light)
 }
 
-.title-input{
-font-family:'Playfair Display',serif;
-font-size:26px;
-border:none;
-background:transparent;
-color:var(--white);
-width:100%;
-margin-bottom:16px
+.toolbar button:hover{
+background:var(--accent);
+color:var(--black)
 }
 
-.form-field textarea{
-width:100%;
+#post-content{
 min-height:380px;
+resize:vertical;
 background:var(--panel);
 border:1px solid var(--border);
 color:var(--white);
 padding:12px
-}
-
-.publish-btn{
-width:100%;
-padding:13px;
-background:var(--accent);
-border:none;
-font-weight:800;
-cursor:pointer
-}
-
-.cancel-btn{
-width:100%;
-padding:9px;
-border:1px solid var(--border);
-background:none;
-color:var(--muted)
-}
-
-.posts-table{
-background:var(--card);
-border:1px solid var(--border)
-}
-
-.post-row{
-display:grid;
-grid-template-columns:1fr 140px 120px 110px;
-padding:16px 20px;
-border-bottom:1px solid var(--border)
 }
 
 </style>
@@ -317,74 +244,28 @@ border-bottom:1px solid var(--border)
 
 <div class="admin-wrap" id="admin-panel">
 
-<div class="admin-header">
-
-<div class="al">
-<span class="logo-w">Wirtschafts</span>
-<span class="logo-hub">Hub</span>
-</div>
-
-<div class="admin-nav">
-<button class="active" onclick="showPanel('dashboard',this)">Dashboard</button>
-<button onclick="showPanel('new-post',this)">Neuer Artikel</button>
-<button onclick="showPanel('all-posts',this)">Alle Artikel</button>
-<a href="index.html" target="_blank" class="view-btn">Website</a>
-<button class="logout-btn" onclick="logout()">Abmelden</button>
-</div>
-
-</div>
-
 <div class="admin-body">
 
-<div class="panel active" id="panel-dashboard">
-<div class="panel-title">Dashboard</div>
-
-<div class="stats-row">
-<div class="stat-card"><div class="stat-num" id="stat-total">0</div>Artikel</div>
-<div class="stat-card"><div class="stat-num" id="stat-today">0</div>Heute</div>
-<div class="stat-card"><div class="stat-num" id="stat-cats">0</div>Kategorien</div>
-<div class="stat-card"><div class="stat-num">📈</div>Märkte</div>
-</div>
-
-<button class="publish-btn" onclick="showPanel('new-post')">Artikel erstellen</button>
-
-</div>
-
-<div class="panel" id="panel-new-post">
-
-<div class="panel-title">Neuer Artikel</div>
+<div class="panel active" id="panel-new-post">
 
 <div class="editor-grid">
 
 <div class="editor-main">
 
-<input class="title-input" type="text" id="post-title" placeholder="Schlagzeile eingeben">
+<input type="text" id="post-title" placeholder="Schlagzeile eingeben..." style="width:100%;margin-bottom:20px;padding:10px">
 
-<div class="form-field">
+<div class="toolbar">
+<button onclick="fmt('bold')"><b>B</b></button>
+<button onclick="fmt('italic')"><i>I</i></button>
+<button onclick="wrapTag('h2')">H2</button>
+<button onclick="wrapTag('h3')">H3</button>
+<button onclick="wrapTag('blockquote')">❝</button>
+<button onclick="insertLink()">🔗 Link</button>
+<button onclick="wrapTag('ul')">Liste</button>
+</div>
+
 <textarea id="post-content"></textarea>
-</div>
 
-</div>
-
-<div class="editor-side">
-
-<div class="side-box">
-<button class="publish-btn" onclick="publishPost()">Veröffentlichen</button>
-<button class="cancel-btn" onclick="clearEditor()">Abbrechen</button>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-<div class="panel" id="panel-all-posts">
-
-<div class="panel-title">Alle Artikel</div>
-
-<div class="posts-table">
-<div id="posts-list"></div>
 </div>
 
 </div>
@@ -396,7 +277,6 @@ border-bottom:1px solid var(--border)
 <script>
 
 const PASS='germanadmin00#hamzauthority1'
-let editingId=null
 
 function doLogin(){
 
@@ -404,8 +284,6 @@ if(document.getElementById('pw-input').value===PASS){
 
 document.getElementById('login-screen').style.display='none'
 document.getElementById('admin-panel').style.display='block'
-
-loadDashboard()
 
 }else{
 
@@ -416,69 +294,53 @@ document.getElementById('pw-input').value=''
 
 }
 
-function logout(){
+function fmt(cmd){
 
-document.getElementById('login-screen').style.display='flex'
-document.getElementById('admin-panel').style.display='none'
+const ta=document.getElementById('post-content')
+const s=ta.selectionStart
+const e=ta.selectionEnd
 
-}
+const sel=ta.value.substring(s,e)
 
-function showPanel(name){
+const tag=cmd==='bold'?'strong':'em'
 
-document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'))
-document.getElementById('panel-'+name).classList.add('active')
-
-}
-
-function getPosts(){
-
-return JSON.parse(localStorage.getItem('db_posts')||'[]')
+ta.value=ta.value.substring(0,s)+`<${tag}>${sel}</${tag}>`+ta.value.substring(e)
 
 }
 
-function savePosts(p){
+function wrapTag(tag){
 
-localStorage.setItem('db_posts',JSON.stringify(p))
+const ta=document.getElementById('post-content')
 
-}
+const s=ta.selectionStart
+const e=ta.selectionEnd
 
-function publishPost(){
+const sel=ta.value.substring(s,e)||'Text hier'
 
-const title=document.getElementById('post-title').value
-const content=document.getElementById('post-content').value
+const w=tag==='ul'
+?`<ul>
+<li>${sel}</li>
+</ul>`
+:`<${tag}>${sel}</${tag}>`
 
-if(!title||!content){
-alert('Titel und Inhalt eingeben')
-return
-}
-
-const posts=getPosts()
-
-posts.push({
-id:Date.now(),
-title,
-content,
-date:new Date().toISOString()
-})
-
-savePosts(posts)
-
-clearEditor()
+ta.value=ta.value.substring(0,s)+w+ta.value.substring(e)
 
 }
 
-function clearEditor(){
+function insertLink(){
 
-document.getElementById('post-title').value=''
-document.getElementById('post-content').value=''
+const url=prompt('URL:')
 
-}
+if(!url)return
 
-function loadDashboard(){
+const ta=document.getElementById('post-content')
 
-const posts=getPosts()
+const s=ta.selectionStart
+const e=ta.selectionEnd
 
-document.getElementById('stat-total').textContent=posts.length
+const sel=ta.value.substring(s,e)||'Link'
+
+ta.value=ta.value.substring(0,s)+`<a href="${url}">${sel}</a>`+ta.value.substring(e)
 
 }
 
