@@ -165,17 +165,17 @@ z-index:2;
   </div>
 </div>
 <script>
-  /* ---------- GITHUB PERMANENT STORAGE OVERRIDE ---------- */
+
+/* ---------- GITHUB STORAGE ---------- */
 
 const GH_USER = "Hamzamain-spec";
-const GH_REPO = location.pathname.split("/")[1] || "WirtschaftsHub";
+const GH_REPO = "WirtschaftsHub";
 const GH_BRANCH = "main";
 const GH_TOKEN = "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";
 const GH_FILE = "posts.json";
 
-/* load posts from github */
-async function ghLoad() {
-
+/* LOAD POSTS */
+async function getPosts() {
   try {
 
     const r = await fetch(
@@ -186,17 +186,15 @@ async function ghLoad() {
     if (!r.ok) return [];
 
     const d = await r.json();
-
     return JSON.parse(atob(d.content));
 
   } catch {
     return [];
   }
-
 }
 
-/* save posts to github */
-async function ghSave(posts) {
+/* SAVE POSTS */
+async function savePosts(posts) {
 
   let sha = null;
 
@@ -233,30 +231,142 @@ async function ghSave(posts) {
       body: JSON.stringify(body)
     }
   );
+}
+
+/* ---------- ADMIN ---------- */
+
+const PASS = 'germanadmin00#hamzauthority1';
+let editingId = null;
+
+function doLogin(){
+  if(document.getElementById('pw-input').value===PASS){
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('admin-panel').style.display='block';
+    loadDashboard();
+  }else{
+    document.getElementById('login-err').style.display='block';
+    document.getElementById('pw-input').value='';
+  }
+}
+
+function logout(){
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('admin-panel').style.display='none';
+}
+
+function showPanel(name,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.admin-nav button').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  if(btn)btn.classList.add('active');
+
+  if(name==='all-posts') loadPostsList();
+  if(name==='dashboard') loadDashboard();
+  if(name==='new-post'){ editingId=null; clearEditor(); }
+}
+
+/* ---------- PUBLISH ---------- */
+
+async function publishPost(){
+
+  const title=document.getElementById('post-title').value.trim();
+  const content=document.getElementById('post-content').value.trim();
+
+  if(!title || !content){
+    alert('Bitte Titel und Inhalt eingeben!');
+    return;
+  }
+
+  const posts = await getPosts();
+
+  if(editingId){
+
+    const idx=posts.findIndex(p=>p.id==editingId);
+
+    if(idx>-1){
+      posts[idx].title=title;
+      posts[idx].content=content;
+      posts[idx].category=document.getElementById('post-cat').value;
+      posts[idx].author=document.getElementById('post-author').value;
+    }
+
+  }else{
+
+    posts.push({
+      id:Date.now(),
+      title,
+      content,
+      category:document.getElementById('post-cat').value,
+      author:document.getElementById('post-author').value||'Redaktion',
+      date:new Date().toISOString()
+    });
+
+  }
+
+  await savePosts(posts);
+
+  const msg=document.getElementById('success-msg');
+  msg.style.display='block';
+
+  setTimeout(()=>{
+    msg.style.display='none';
+    clearEditor();
+  },2000);
 
 }
 
-/* override old browser storage */
+/* ---------- LIST POSTS ---------- */
 
-window.getPosts = ghLoad;
+async function loadPostsList(){
 
-window.savePosts = ghSave;
+  const posts = await getPosts();
+  const el=document.getElementById('posts-list');
 
-/* ------------------------------------------------------ */
-const PASS='germanadmin00#hamzauthority1';let editingId=null;
-function doLogin(){if(document.getElementById('pw-input').value===PASS){document.getElementById('login-screen').style.display='none';document.getElementById('admin-panel').style.display='block';loadDashboard();}else{document.getElementById('login-err').style.display='block';document.getElementById('pw-input').value='';}}
-function logout(){document.getElementById('login-screen').style.display='flex';document.getElementById('admin-panel').style.display='none';document.getElementById('pw-input').value='';}
-function showPanel(name,btn){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.admin-nav button').forEach(b=>b.classList.remove('active'));document.getElementById('panel-'+name).classList.add('active');if(btn)btn.classList.add('active');if(name==='all-posts')loadPostsList();if(name==='dashboard')loadDashboard();if(name==='new-post'){editingId=null;clearEditor();}}
-function publishPost(){const title=document.getElementById('post-title').value.trim(),content=document.getElementById('post-content').value.trim();if(!title||!content){alert('Bitte Titel und Inhalt eingeben!');return;}const posts=getPosts();if(editingId){const idx=posts.findIndex(p=>p.id==editingId);if(idx>-1){posts[idx].title=title;posts[idx].content=content;posts[idx].category=document.getElementById('post-cat').value;posts[idx].author=document.getElementById('post-author').value;}}else{posts.push({id:Date.now(),title,content,category:document.getElementById('post-cat').value,author:document.getElementById('post-author').value||'Redaktion',date:new Date().toISOString()});}savePosts(posts);const msg=document.getElementById('success-msg');msg.textContent=editingId?'✅ AKTUALISIERT':'✅ VERÖFFENTLICHT';msg.style.display='block';setTimeout(()=>{msg.style.display='none';clearEditor();},2000);editingId=null;}
-function clearEditor(){document.getElementById('post-title').value='';document.getElementById('post-content').value='';document.getElementById('post-cat').value='Wirtschaft';document.getElementById('post-author').value='Redaktion WirtschaftsHub';document.getElementById('preview-title').textContent='—';document.getElementById('preview-excerpt').textContent='—';document.getElementById('editor-mode-title').textContent='Neuer Artikel';editingId=null;}
-document.addEventListener('DOMContentLoaded',()=>{document.getElementById('post-title').addEventListener('input',e=>{document.getElementById('preview-title').textContent=e.target.value||'—';});document.getElementById('post-content').addEventListener('input',e=>{const t=e.target.value.replace(/<[^>]+>/g,'').substring(0,80);document.getElementById('preview-excerpt').textContent=t?t+'...':'—';});});
-function fmt(cmd){const ta=document.getElementById('post-content'),s=ta.selectionStart,e=ta.selectionEnd,sel=ta.value.substring(s,e),tag=cmd==='bold'?'strong':'em';ta.value=ta.value.substring(0,s)+`<${tag}>${sel}</${tag}>`+ta.value.substring(e);}
-function wrapTag(tag){const ta=document.getElementById('post-content'),s=ta.selectionStart,e=ta.selectionEnd,sel=ta.value.substring(s,e)||'Text hier';const w=tag==='ul'?`<ul>\n  <li>${sel}</li>\n</ul>`:`<${tag}>${sel}</${tag}>`;ta.value=ta.value.substring(0,s)+w+ta.value.substring(e);}
-function insertLink(){const url=prompt('URL:');if(!url)return;const ta=document.getElementById('post-content'),s=ta.selectionStart,e=ta.selectionEnd,sel=ta.value.substring(s,e)||'Link';ta.value=ta.value.substring(0,s)+`<a href="${url}">${sel}</a>`+ta.value.substring(e);}
-function loadPostsList(){const posts=getPosts(),el=document.getElementById('posts-list');if(!posts.length){el.innerHTML='<div class="empty-posts">Keine Artikel vorhanden.</div>';return;}el.innerHTML=posts.slice().reverse().map(p=>{const date=new Date(p.date).toLocaleDateString('de-DE'),excerpt=p.content.replace(/<[^>]+>/g,'').substring(0,55);return `<div class="post-row"><div><div class="post-row-title">${p.title}</div><div class="post-row-excerpt">${excerpt}...</div></div><div class="post-row-date">${date}</div><div><span class="post-row-cat">${p.category||'Wirtschaft'}</span></div><div class="row-actions"><button class="edit-btn" onclick="editPost(${p.id})">✏ Edit</button><button class="del-btn" onclick="deletePost(${p.id})">✕ Del</button></div></div>`;}).join('');}
-function editPost(id){const post=getPosts().find(p=>p.id==id);if(!post)return;editingId=id;document.getElementById('post-title').value=post.title;document.getElementById('post-content').value=post.content;document.getElementById('post-cat').value=post.category||'Wirtschaft';document.getElementById('post-author').value=post.author||'Redaktion';document.getElementById('editor-mode-title').textContent='Artikel bearbeiten';document.getElementById('preview-title').textContent=post.title;showPanel('new-post',document.querySelector('.admin-nav button:nth-child(2)'));}
-function deletePost(id){if(!confirm('Artikel löschen?'))return;savePosts(getPosts().filter(p=>p.id!=id));loadPostsList();loadDashboard();}
-function loadDashboard(){const posts=getPosts();document.getElementById('stat-total').textContent=posts.length;const today=new Date().toDateString();document.getElementById('stat-today').textContent=posts.filter(p=>new Date(p.date).toDateString()===today).length;document.getElementById('stat-cats').textContent=new Set(posts.map(p=>p.category)).size;}
+  if(!posts.length){
+    el.innerHTML='<div class="empty-posts">Keine Artikel vorhanden.</div>';
+    return;
+  }
+
+  el.innerHTML = posts.slice().reverse().map(p=>{
+
+    const date=new Date(p.date).toLocaleDateString('de-DE');
+    const excerpt=p.content.replace(/<[^>]+>/g,'').substring(0,55);
+
+    return `<div class="post-row">
+      <div>
+        <div class="post-row-title">${p.title}</div>
+        <div class="post-row-excerpt">${excerpt}...</div>
+      </div>
+      <div class="post-row-date">${date}</div>
+      <div><span class="post-row-cat">${p.category||'Wirtschaft'}</span></div>
+      <div class="row-actions">
+        <button class="edit-btn" onclick="editPost(${p.id})">✏ Edit</button>
+        <button class="del-btn" onclick="deletePost(${p.id})">✕ Del</button>
+      </div>
+    </div>`;
+
+  }).join('');
+
+}
+
+/* ---------- DASHBOARD ---------- */
+
+async function loadDashboard(){
+
+  const posts = await getPosts();
+
+  document.getElementById('stat-total').textContent=posts.length;
+
+  const today=new Date().toDateString();
+
+  document.getElementById('stat-today').textContent=
+    posts.filter(p=>new Date(p.date).toDateString()===today).length;
+
+  document.getElementById('stat-cats').textContent=
+    new Set(posts.map(p=>p.category)).size;
+
+}
+
 </script>
 </body>
 </html>
