@@ -5,174 +5,300 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin — WirtschaftsHub</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+
 <style>
+
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--black:#0A0A0A;--dark:#111318;--panel:#1A1D24;--card:#1E2128;--border:#2A2D36;--accent:#E8C420;--red:#E84020;--white:#FFFFFF;--muted:#6B7280;--light:#9CA3AF;--green:#22C55E}
-body{font-family:'Inter',sans-serif;background:var(--dark);color:var(--white);min-height:100vh}
-.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--black);position:relative;overflow:hidden}
-.login-wrap::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(232,196,32,0.04) 0%,transparent 70%)}
-.login-box{background:var(--panel);border:1px solid var(--border);padding:52px 44px;width:100%;max-width:400px;border-top:3px solid var(--accent)}
-.login-logo{margin-bottom:6px;display:flex;align-items:baseline}
-.logo-w{font-family:'Playfair Display',serif;font-size:28px;font-weight:800;color:var(--white)}
-.logo-hub{font-family:'Playfair Display',serif;font-size:28px;font-weight:800;color:var(--accent)}
-.login-sub{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:36px;font-weight:600}
-.field{margin-bottom:20px}
-.field label{display:block;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
-.field input{width:100%;padding:12px 16px;border:1px solid var(--border);font-size:15px;font-family:'Inter',sans-serif;outline:none;transition:border 0.2s;background:var(--card);color:var(--white)}
-.field input:focus{border-color:var(--accent)}
-.login-btn{width:100%;padding:14px;background:var(--accent);color:var(--black);border:none;font-size:11px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:opacity 0.2s}
-.login-btn:hover{opacity:0.85}
-.login-err{color:var(--red);font-size:12px;margin-top:10px;display:none;font-weight:600;text-align:center;letter-spacing:0.5px}
-.admin-wrap{display:none;min-height:100vh}
-.admin-header{background:var(--black);height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:100;border-bottom:2px solid var(--accent)}
-.al{display:flex;align-items:baseline}
-.al .logo-w{font-size:18px}.al .logo-hub{font-size:18px}
-.admin-nav{display:flex;gap:4px;align-items:center}
-.admin-nav button{background:transparent;border:1px solid var(--border);color:var(--light);padding:7px 16px;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s}
-.admin-nav button:hover,.admin-nav button.active{background:var(--accent);border-color:var(--accent);color:var(--black)}
-.logout-btn{background:transparent;border:none;color:var(--muted);font-size:10px;cursor:pointer;font-family:'Inter',sans-serif;padding:7px;font-weight:600;margin-left:8px}
-.logout-btn:hover{color:var(--white)}
-.view-btn{display:inline-flex;align-items:center;background:transparent;border:1px solid var(--border);color:var(--light);padding:7px 16px;text-decoration:none;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;transition:all 0.2s}
-.view-btn:hover{border-color:var(--accent);color:var(--accent)}
-.admin-body{max-width:1100px;margin:0 auto;padding:32px 28px}
-.panel{display:none}.panel.active{display:block}
-.panel-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:800;color:var(--white);margin-bottom:24px;display:flex;align-items:center;gap:10px}
-.panel-title::before{content:'';width:3px;height:26px;background:var(--accent)}
-.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px}
-.stat-card{background:var(--card);border:1px solid var(--border);padding:24px;border-bottom:3px solid var(--accent)}
-.stat-num{font-size:46px;font-weight:900;color:var(--accent);line-height:1;margin-bottom:4px}
-.stat-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
-.editor-grid{display:grid;grid-template-columns:1fr 280px;gap:20px}
-.editor-main{background:var(--card);border:1px solid var(--border);padding:32px}
-.editor-side{display:flex;flex-direction:column;gap:12px}
-.side-box{background:var(--card);border:1px solid var(--border);padding:20px}
-.side-box h3{font-size:10px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border)}
-.title-input{font-family:'Playfair Display',serif;font-size:26px;font-weight:800;border:none;background:transparent;padding:0;width:100%;outline:none;margin-bottom:16px;color:var(--white)}
-.title-input::placeholder{color:var(--border)}
-.title-sep{height:1px;background:var(--border);margin-bottom:8px}
-.title-sep-accent{height:1px;background:linear-gradient(to right,var(--accent),transparent);margin-bottom:20px}
-.form-field{margin-bottom:14px}
-.form-field label{display:block;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
-.form-field input,.form-field select,.form-field textarea{width:100%;padding:10px 14px;border:1px solid var(--border);font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border 0.2s;background:var(--panel);color:var(--white)}
-.form-field input:focus,.form-field select:focus,.form-field textarea:focus{border-color:var(--accent)}
-.form-field select option{background:var(--panel)}
-#post-content{min-height:380px;resize:vertical;line-height:1.75;font-size:14px}
-.toolbar{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}
-.toolbar button{background:var(--panel);border:1px solid var(--border);padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s;color:var(--light)}
-.toolbar button:hover{background:var(--accent);color:var(--black);border-color:var(--accent)}
-.publish-btn{width:100%;padding:13px;background:var(--accent);color:var(--black);border:none;font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;margin-bottom:8px;transition:opacity 0.2s}
-.publish-btn:hover{opacity:0.85}
-.cancel-btn{width:100%;padding:9px;background:transparent;color:var(--muted);border:1px solid var(--border);font-size:10px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:1.5px;text-transform:uppercase;transition:all 0.2s}
-.cancel-btn:hover{border-color:var(--accent);color:var(--accent)}
-.success-msg{background:rgba(34,197,94,0.1);color:var(--green);border:1px solid rgba(34,197,94,0.3);padding:10px;font-size:10px;font-weight:700;margin-top:8px;display:none;letter-spacing:2px;text-transform:uppercase;text-align:center}
-.posts-table{background:var(--card);border:1px solid var(--border);overflow:hidden}
-.posts-table-header{display:grid;grid-template-columns:1fr 140px 120px 110px;padding:12px 20px;background:var(--black);color:var(--muted);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;border-bottom:2px solid var(--accent)}
-.post-row{display:grid;grid-template-columns:1fr 140px 120px 110px;padding:16px 20px;border-bottom:1px solid var(--border);align-items:center;transition:background 0.15s}
-.post-row:hover{background:var(--panel)}
-.post-row:last-child{border-bottom:none}
-.post-row-title{font-size:14px;font-weight:600;color:var(--white);margin-bottom:3px}
-.post-row-excerpt{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:380px}
-.post-row-date{font-size:12px;color:var(--muted)}
-.post-row-cat{font-size:9px;background:var(--panel);color:var(--accent);padding:3px 10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;border:1px solid var(--border)}
-.row-actions{display:flex;gap:6px}
-.edit-btn{background:var(--accent);color:var(--black);border:none;padding:5px 12px;font-size:10px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:1px}
-.del-btn{background:var(--red);color:#fff;border:none;padding:5px 12px;font-size:10px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif}
-.empty-posts{text-align:center;padding:60px;color:var(--muted);font-size:14px}
-.dashboard-cta{background:var(--card);border:1px solid var(--border);padding:52px;text-align:center;position:relative;overflow:hidden}
-.dashboard-cta::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(232,196,32,0.05) 0%,transparent 70%)}
-.dashboard-cta h3{font-family:'Playfair Display',serif;font-size:32px;font-weight:800;color:var(--white);margin-bottom:10px;position:relative}
-.dashboard-cta p{font-size:14px;color:var(--muted);margin-bottom:24px;position:relative}
-.preview-box{background:var(--panel);border:1px solid var(--border);padding:12px}
-.preview-title-txt{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:var(--white);margin-bottom:4px}
-.preview-exc{font-size:11px;color:var(--muted);line-height:1.5}
+
+:root{
+--black:#0A0A0A;
+--dark:#111318;
+--panel:#1A1D24;
+--card:#1E2128;
+--border:#2A2D36;
+--accent:#E8C420;
+--red:#E84020;
+--white:#FFFFFF;
+--muted:#6B7280;
+--light:#9CA3AF;
+--green:#22C55E
+}
+
+body{
+font-family:'Inter',sans-serif;
+background:var(--dark);
+color:var(--white);
+min-height:100vh
+}
+
+.login-wrap{
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+background:var(--black);
+position:relative;
+overflow:hidden
+}
+
+/* FIXED OVERLAY */
+.login-wrap::before{
+content:'';
+position:absolute;
+inset:0;
+background:radial-gradient(ellipse at 50% 50%,rgba(232,196,32,0.04) 0%,transparent 70%);
+pointer-events:none;
+}
+
+/* LOGIN BOX ABOVE OVERLAY */
+.login-box{
+background:var(--panel);
+border:1px solid var(--border);
+padding:52px 44px;
+width:100%;
+max-width:400px;
+border-top:3px solid var(--accent);
+position:relative;
+z-index:2;
+}
+
+.login-logo{
+margin-bottom:6px;
+display:flex;
+align-items:baseline
+}
+
+.logo-w{
+font-family:'Playfair Display',serif;
+font-size:28px;
+font-weight:800;
+color:var(--white)
+}
+
+.logo-hub{
+font-family:'Playfair Display',serif;
+font-size:28px;
+font-weight:800;
+color:var(--accent)
+}
+
+.login-sub{
+font-size:10px;
+letter-spacing:3px;
+text-transform:uppercase;
+color:var(--muted);
+margin-bottom:36px;
+font-weight:600
+}
+
+.field{
+margin-bottom:20px
+}
+
+.field label{
+display:block;
+font-size:10px;
+font-weight:700;
+letter-spacing:2px;
+text-transform:uppercase;
+color:var(--muted);
+margin-bottom:8px
+}
+
+.field input{
+width:100%;
+padding:12px 16px;
+border:1px solid var(--border);
+font-size:15px;
+font-family:'Inter',sans-serif;
+outline:none;
+transition:border 0.2s;
+background:var(--card);
+color:var(--white)
+}
+
+.field input:focus{
+border-color:var(--accent)
+}
+
+.login-btn{
+width:100%;
+padding:14px;
+background:var(--accent);
+color:var(--black);
+border:none;
+font-size:11px;
+font-weight:800;
+letter-spacing:2.5px;
+text-transform:uppercase;
+cursor:pointer;
+font-family:'Inter',sans-serif;
+transition:opacity 0.2s
+}
+
+.login-btn:hover{
+opacity:0.85
+}
+
+.login-err{
+color:var(--red);
+font-size:12px;
+margin-top:10px;
+display:none;
+font-weight:600;
+text-align:center;
+letter-spacing:0.5px
+}
+
+.admin-wrap{
+display:none;
+min-height:100vh
+}
+
+.admin-header{
+background:var(--black);
+height:60px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:0 28px;
+position:sticky;
+top:0;
+z-index:100;
+border-bottom:2px solid var(--accent)
+}
+
+.al{
+display:flex;
+align-items:baseline
+}
+
+.al .logo-w{font-size:18px}
+.al .logo-hub{font-size:18px}
+
+.admin-nav{
+display:flex;
+gap:4px;
+align-items:center
+}
+
+.admin-nav button{
+background:transparent;
+border:1px solid var(--border);
+color:var(--light);
+padding:7px 16px;
+font-size:10px;
+font-weight:700;
+letter-spacing:1.5px;
+text-transform:uppercase;
+cursor:pointer;
+font-family:'Inter',sans-serif;
+transition:all 0.2s
+}
+
+.admin-nav button:hover,
+.admin-nav button.active{
+background:var(--accent);
+border-color:var(--accent);
+color:var(--black)
+}
+
+.logout-btn{
+background:transparent;
+border:none;
+color:var(--muted);
+font-size:10px;
+cursor:pointer;
+font-family:'Inter',sans-serif;
+padding:7px;
+font-weight:600;
+margin-left:8px
+}
+
+.logout-btn:hover{
+color:var(--white)
+}
+
+.view-btn{
+display:inline-flex;
+align-items:center;
+background:transparent;
+border:1px solid var(--border);
+color:var(--light);
+padding:7px 16px;
+text-decoration:none;
+font-size:10px;
+font-weight:700;
+letter-spacing:1.5px;
+text-transform:uppercase;
+transition:all 0.2s
+}
+
+.view-btn:hover{
+border-color:var(--accent);
+color:var(--accent)
+}
+
+.admin-body{
+max-width:1100px;
+margin:0 auto;
+padding:32px 28px
+}
+
+.panel{display:none}
+.panel.active{display:block}
+
 </style>
 </head>
+
 <body>
+
 <div class="login-wrap" id="login-screen">
-  <div class="login-box">
-    <div class="login-logo"><span class="logo-w">Wirtschafts</span><span class="logo-hub">Hub</span></div>
-    <div class="login-sub">Redaktionssystem</div>
-    <div class="field"><label>Passwort</label><input type="password" id="pw-input" placeholder="Passwort eingeben..." onkeydown="if(event.key==='Enter')doLogin()"></div>
-    <button class="login-btn" onclick="doLogin()">ANMELDEN →</button>
-    <div class="login-err" id="login-err">⚠ Falsches Passwort</div>
-  </div>
+
+<div class="login-box">
+
+<div class="login-logo">
+<span class="logo-w">Wirtschafts</span>
+<span class="logo-hub">Hub</span>
 </div>
-<div class="admin-wrap" id="admin-panel">
-  <div class="admin-header">
-    <div class="al"><span class="logo-w" style="font-family:'Playfair Display',serif;font-size:18px;font-weight:800;color:#fff">Wirtschafts</span><span class="logo-hub" style="font-family:'Playfair Display',serif;font-size:18px;font-weight:800;color:var(--accent)">Hub</span></div>
-    <div class="admin-nav">
-      <button class="active" onclick="showPanel('dashboard',this)">Dashboard</button>
-      <button onclick="showPanel('new-post',this)">✏ Neuer Artikel</button>
-      <button onclick="showPanel('all-posts',this)">📋 Alle Artikel</button>
-      <a href="index.html" target="_blank" class="view-btn">🌐 Website</a>
-      <button class="logout-btn" onclick="logout()">Abmelden</button>
-    </div>
-  </div>
-  <div class="admin-body">
-    <div class="panel active" id="panel-dashboard">
-      <div class="panel-title">Dashboard</div>
-      <div class="stats-row">
-        <div class="stat-card"><div class="stat-num" id="stat-total">0</div><div class="stat-label">Artikel gesamt</div></div>
-        <div class="stat-card"><div class="stat-num" id="stat-today">0</div><div class="stat-label">Heute</div></div>
-        <div class="stat-card"><div class="stat-num" id="stat-cats">0</div><div class="stat-label">Ressorts</div></div>
-        <div class="stat-card"><div class="stat-num">📈</div><div class="stat-label">Live Märkte</div></div>
-      </div>
-      <div class="dashboard-cta">
-        <h3>Bereit für den nächsten Report?</h3>
-        <p>Erstelle deinen nächsten Wirtschaftsartikel für WirtschaftsHub</p>
-        <button class="publish-btn" style="width:auto;padding:12px 36px" onclick="showPanel('new-post',document.querySelector('.admin-nav button:nth-child(2)'))">Artikel erstellen →</button>
-      </div>
-    </div>
-    <div class="panel" id="panel-new-post">
-      <div class="panel-title"><span id="editor-mode-title">Neuer Artikel</span></div>
-      <div class="editor-grid">
-        <div class="editor-main">
-          <input class="title-input" type="text" id="post-title" placeholder="Schlagzeile eingeben...">
-          <div class="title-sep"></div><div class="title-sep-accent"></div>
-          <div class="toolbar">
-            <button onclick="fmt('bold')"><b>B</b></button>
-            <button onclick="fmt('italic')"><i>I</i></button>
-            <button onclick="wrapTag('h2')">H2</button>
-            <button onclick="wrapTag('h3')">H3</button>
-            <button onclick="wrapTag('blockquote')">❝</button>
-            <button onclick="insertLink()">🔗 Link</button>
-            <button onclick="wrapTag('ul')">Liste</button>
-          </div>
-          <div class="form-field"><textarea id="post-content" placeholder="Artikelinhalt... HTML erlaubt.&#10;&lt;p&gt;Ihr Text...&lt;/p&gt;&#10;&lt;a href=&quot;https://example.com&quot;&gt;Link-Text&lt;/a&gt;"></textarea></div>
-        </div>
-        <div class="editor-side">
-          <div class="side-box"><h3>Veröffentlichen</h3><button class="publish-btn" onclick="publishPost()">🚀 Jetzt veröffentlichen</button><button class="cancel-btn" onclick="clearEditor()">✖ Abbrechen</button><div class="success-msg" id="success-msg">✅ VERÖFFENTLICHT</div></div>
-          <div class="side-box"><h3>Metadaten</h3>
-            <div class="form-field"><label>Ressort</label><select id="post-cat"><option>Wirtschaft</option><option>Finanzen</option><option>Unternehmen</option><option>Karriere</option><option>Digitalisierung</option><option>Märkte</option><option>Ratgeber</option><option>Steuern</option><option>Recht</option><option>International</option></select></div>
-            <div class="form-field"><label>Autor</label><input type="text" id="post-author" value="Redaktion WirtschaftsHub"></div>
-          </div>
-          <div class="side-box"><h3>Vorschau</h3><div class="preview-box"><div class="preview-title-txt" id="preview-title">—</div><div class="preview-exc" id="preview-excerpt">—</div></div></div>
-        </div>
-      </div>
-    </div>
-    <div class="panel" id="panel-all-posts">
-      <div class="panel-title">Alle Artikel</div>
-      <div class="posts-table"><div class="posts-table-header"><div>Titel</div><div>Datum</div><div>Ressort</div><div>Aktionen</div></div><div id="posts-list"></div></div>
-    </div>
-  </div>
+
+<div class="login-sub">Redaktionssystem</div>
+
+<div class="field">
+<label>Passwort</label>
+<input type="password" id="pw-input" placeholder="Passwort eingeben..." autofocus onkeydown="if(event.key==='Enter')doLogin()">
 </div>
+
+<button class="login-btn" onclick="doLogin()">ANMELDEN →</button>
+
+<div class="login-err" id="login-err">⚠ Falsches Passwort</div>
+
+</div>
+</div>
+
+<div class="admin-wrap" id="admin-panel"></div>
+
 <script>
-const PASS='germanadmin00#hamzauthority1';let editingId=null;
-function doLogin(){if(document.getElementById('pw-input').value===PASS){document.getElementById('login-screen').style.display='none';document.getElementById('admin-panel').style.display='block';loadDashboard();}else{document.getElementById('login-err').style.display='block';document.getElementById('pw-input').value='';}}
-function logout(){document.getElementById('login-screen').style.display='flex';document.getElementById('admin-panel').style.display='none';document.getElementById('pw-input').value='';}
-function showPanel(name,btn){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.admin-nav button').forEach(b=>b.classList.remove('active'));document.getElementById('panel-'+name).classList.add('active');if(btn)btn.classList.add('active');if(name==='all-posts')loadPostsList();if(name==='dashboard')loadDashboard();if(name==='new-post'){editingId=null;clearEditor();}}
-function getPosts(){return JSON.parse(localStorage.getItem('db_posts')||'[]');}
-function savePosts(p){localStorage.setItem('db_posts',JSON.stringify(p));}
-function publishPost(){const title=document.getElementById('post-title').value.trim(),content=document.getElementById('post-content').value.trim();if(!title||!content){alert('Bitte Titel und Inhalt eingeben!');return;}const posts=getPosts();if(editingId){const idx=posts.findIndex(p=>p.id==editingId);if(idx>-1){posts[idx].title=title;posts[idx].content=content;posts[idx].category=document.getElementById('post-cat').value;posts[idx].author=document.getElementById('post-author').value;}}else{posts.push({id:Date.now(),title,content,category:document.getElementById('post-cat').value,author:document.getElementById('post-author').value||'Redaktion',date:new Date().toISOString()});}savePosts(posts);const msg=document.getElementById('success-msg');msg.textContent=editingId?'✅ AKTUALISIERT':'✅ VERÖFFENTLICHT';msg.style.display='block';setTimeout(()=>{msg.style.display='none';clearEditor();},2000);editingId=null;}
-function clearEditor(){document.getElementById('post-title').value='';document.getElementById('post-content').value='';document.getElementById('post-cat').value='Wirtschaft';document.getElementById('post-author').value='Redaktion WirtschaftsHub';document.getElementById('preview-title').textContent='—';document.getElementById('preview-excerpt').textContent='—';document.getElementById('editor-mode-title').textContent='Neuer Artikel';editingId=null;}
-document.addEventListener('DOMContentLoaded',()=>{document.getElementById('post-title').addEventListener('input',e=>{document.getElementById('preview-title').textContent=e.target.value||'—';});document.getElementById('post-content').addEventListener('input',e=>{const t=e.target.value.replace(/<[^>]+>/g,'').substring(0,80);document.getElementById('preview-excerpt').textContent=t?t+'...':'—';});});
-function fmt(cmd){const ta=document.getElementById('post-content'),s=ta.selectionStart,e=ta.selectionEnd,sel=ta.value.substring(s,e),tag=cmd==='bold'?'strong':'em';ta.value=ta.value.substring(0,s)+`<${tag}>${sel}</${tag}>`+ta.value.substring(e);}
-function wrapTag(tag){const ta=document.getElementById('post-content'),s=ta.selectionStart,e=ta.selectionEnd,sel=ta.value.substring(s,e)||'Text hier';const w=tag==='ul'?`<ul>\n  <li>${sel}</li>\n</ul>`:`<${tag}>${sel}</${tag}>`;ta.value=ta.value.substring(0,s)+w+ta.value.substring(e);}
-function insertLink(){const url=prompt('URL:');if(!url)return;const ta=document.getElementById('post-content'),s=ta.selectionStart,e=ta.selectionEnd,sel=ta.value.substring(s,e)||'Link';ta.value=ta.value.substring(0,s)+`<a href="${url}">${sel}</a>`+ta.value.substring(e);}
-function loadPostsList(){const posts=getPosts(),el=document.getElementById('posts-list');if(!posts.length){el.innerHTML='<div class="empty-posts">Keine Artikel vorhanden.</div>';return;}el.innerHTML=posts.slice().reverse().map(p=>{const date=new Date(p.date).toLocaleDateString('de-DE'),excerpt=p.content.replace(/<[^>]+>/g,'').substring(0,55);return `<div class="post-row"><div><div class="post-row-title">${p.title}</div><div class="post-row-excerpt">${excerpt}...</div></div><div class="post-row-date">${date}</div><div><span class="post-row-cat">${p.category||'Wirtschaft'}</span></div><div class="row-actions"><button class="edit-btn" onclick="editPost(${p.id})">✏ Edit</button><button class="del-btn" onclick="deletePost(${p.id})">✕ Del</button></div></div>`;}).join('');}
-function editPost(id){const post=getPosts().find(p=>p.id==id);if(!post)return;editingId=id;document.getElementById('post-title').value=post.title;document.getElementById('post-content').value=post.content;document.getElementById('post-cat').value=post.category||'Wirtschaft';document.getElementById('post-author').value=post.author||'Redaktion';document.getElementById('editor-mode-title').textContent='Artikel bearbeiten';document.getElementById('preview-title').textContent=post.title;showPanel('new-post',document.querySelector('.admin-nav button:nth-child(2)'));}
-function deletePost(id){if(!confirm('Artikel löschen?'))return;savePosts(getPosts().filter(p=>p.id!=id));loadPostsList();loadDashboard();}
-function loadDashboard(){const posts=getPosts();document.getElementById('stat-total').textContent=posts.length;const today=new Date().toDateString();document.getElementById('stat-today').textContent=posts.filter(p=>new Date(p.date).toDateString()===today).length;document.getElementById('stat-cats').textContent=new Set(posts.map(p=>p.category)).size;}
+
+const PASS='germanadmin00#hamzauthority1';
+
+function doLogin(){
+
+if(document.getElementById('pw-input').value===PASS){
+
+document.getElementById('login-screen').style.display='none';
+document.getElementById('admin-panel').style.display='block';
+
+}else{
+
+document.getElementById('login-err').style.display='block';
+document.getElementById('pw-input').value='';
+
+}
+
+}
+
 </script>
+
 </body>
 </html>
