@@ -259,8 +259,22 @@ ghLoad();
 
 const PASS='germanadmin00#hamzauthority1';let editingId=null;
 
-function doLogin(){if(document.getElementById('pw-input').value===PASS){document.getElementById('login-screen').style.display='none';document.getElementById('admin-panel').style.display='block';loadDashboard();}else{document.getElementById('login-err').style.display='block';document.getElementById('pw-input').value='';}}
+async function doLogin(){
+if(document.getElementById('pw-input').value===PASS){
 
+await ghLoad();
+
+document.getElementById('login-screen').style.display='none';
+document.getElementById('admin-panel').style.display='block';
+
+loadDashboard();
+
+}else{
+
+document.getElementById('login-err').style.display='block';
+document.getElementById('pw-input').value='';
+
+}}
 function logout(){document.getElementById('login-screen').style.display='flex';document.getElementById('admin-panel').style.display='none';document.getElementById('pw-input').value='';}
 
 function showPanel(name,btn){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.admin-nav button').forEach(b=>b.classList.remove('active'));document.getElementById('panel-'+name).classList.add('active');if(btn)btn.classList.add('active');if(name==='all-posts')loadPostsList();if(name==='dashboard')loadDashboard();if(name==='new-post'){editingId=null;clearEditor();}}
