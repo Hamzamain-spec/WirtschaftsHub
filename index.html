@@ -153,7 +153,7 @@ footer{background:var(--black);border-top:1px solid var(--border);margin-top:40p
   <div class="main-col">
     <div class="featured-label">Hauptartikel</div>
     <div id="featured-wrap">
-      <div class="empty-state"><h3>Noch keine Artikel</h3><p>Erstelle deinen ersten Artikel im Admin-Bereich.</p></div>
+      <div class="empty-state"><h3>Artikel werden geladen...</h3><p>Bitte warten Sie einen Moment.</p></div>
     </div>
     <div id="list-wrap"></div>
   </div>
@@ -193,53 +193,127 @@ footer{background:var(--black);border-top:1px solid var(--border);margin-top:40p
   <div class="footer-bottom"><span>&copy; 2026 WirtschaftsHub — Unabhängiges Wirtschaftsmagazin</span><div><a href="#">Impressum</a><a href="#">Datenschutz</a><a href="#">Kontakt</a></div></div>
 </footer>
 <a href="admin.html" class="admin-link">⚙ Admin</a>
+
 <script>
-const thumbs=['lt1','lt2','lt3','lt4','lt5'];
-const cats=['Wirtschaft','Finanzen','Unternehmen','Karriere','Digitalisierung','Märkte'];
-function loadPosts(){
-  const posts=JSON.parse(localStorage.getItem('db_posts')||'[]').slice().reverse();
-  const fw=document.getElementById('featured-wrap'),lw=document.getElementById('list-wrap'),sr=document.getElementById('sidebar-recent');
-  if(!posts.length)return;
+const thumbs = ['lt1','lt2','lt3','lt4','lt5'];
+const SITE_NAME = 'wirtschaftshub';
+const GIST_ID = '42ea11087f40fdba423f8eb0f575ac96'; // Same Gist for all sites!
+
+async function loadPosts() {
+  const posts = await getPostsFromGist();
+  const fw = document.getElementById('featured-wrap');
+  const lw = document.getElementById('list-wrap');
+  const sr = document.getElementById('sidebar-recent');
+  
+  if (!posts || posts.length === 0) {
+    fw.innerHTML = '<div class="empty-state"><h3>Noch keine Artikel</h3><p>Erstelle deinen ersten Artikel im Admin-Bereich.</p></div>';
+    lw.innerHTML = '';
+    sr.innerHTML = '';
+    return;
+  }
+  
+  // Sort by date (newest first)
+  const sortedPosts = [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
+  
   // Featured (first post)
-  const p=posts[0];
-  const fd=new Date(p.date).toLocaleDateString('de-DE',{day:'numeric',month:'long',year:'numeric'});
-  const fex=p.content.replace(/<[^>]+>/g,'').substring(0,160)+'...';
-  const init=(p.author||'R').charAt(0).toUpperCase();
-  fw.innerHTML=`<div class="featured-article" onclick="location.href='post.html?id=${p.id}'">
-    <div class="featured-img"><div class="featured-img-overlay"></div><div>
-      <span class="featured-cat">${p.category||'Wirtschaft'}</span>
-      <span class="featured-title">${p.title}</span>
-    </div></div>
-    <div class="featured-body">
-      <div class="featured-excerpt">${fex}</div>
-      <div class="featured-meta">
-        <div class="featured-author"><div class="author-dot">${init}</div><div><div class="author-name">${p.author||'Redaktion'}</div><div class="author-date">${fd}</div></div></div>
-        <a class="featured-readmore" href="post.html?id=${p.id}">Weiterlesen →</a>
-      </div>
-    </div></div>`;
-  // List (rest)
-  lw.innerHTML='';
-  posts.slice(1,6).forEach((p,i)=>{
-    const date=new Date(p.date).toLocaleDateString('de-DE');
-    lw.innerHTML+=`<div class="list-item" onclick="location.href='post.html?id=${p.id}'">
-      <div class="list-thumb ${thumbs[i%thumbs.length]}"></div>
-      <div class="list-body">
-        <div class="list-cat">${p.category||'Wirtschaft'}</div>
-        <div class="list-title">${p.title}</div>
-        <div class="list-meta">${p.author||'Redaktion'} · ${date}</div>
-      </div></div>`;
+  const p = sortedPosts[0];
+  const fd = new Date(p.date).toLocaleDateString('de-DE', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
   });
-  // Sidebar
-  sr.innerHTML='';
-  posts.slice(0,4).forEach((p,i)=>{
-    const date=new Date(p.date).toLocaleDateString('de-DE');
-    sr.innerHTML+=`<div class="side-item" onclick="location.href='post.html?id=${p.id}'">
-      <div class="side-thumb ${thumbs[i%thumbs.length]}"></div>
-      <div class="side-info"><div class="side-cat">${p.category||'Wirtschaft'}</div><div class="side-title">${p.title}</div><div class="side-date">${date}</div></div>
-    </div>`;
+  const fex = p.content.replace(/<[^>]+>/g, '').substring(0, 160) + '...';
+  const init = (p.author || 'R').charAt(0).toUpperCase();
+  
+  fw.innerHTML = `
+    <div class="featured-article" onclick="location.href='post.html?id=${p.id}'">
+      <div class="featured-img">
+        <div class="featured-img-overlay"></div>
+        <div>
+          <span class="featured-cat">${p.category || 'Wirtschaft'}</span>
+          <span class="featured-title">${p.title}</span>
+        </div>
+      </div>
+      <div class="featured-body">
+        <div class="featured-excerpt">${fex}</div>
+        <div class="featured-meta">
+          <div class="featured-author">
+            <div class="author-dot">${init}</div>
+            <div>
+              <div class="author-name">${p.author || 'Redaktion'}</div>
+              <div class="author-date">${fd}</div>
+            </div>
+          </div>
+          <a class="featured-readmore" href="post.html?id=${p.id}">Weiterlesen →</a>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  // List (next 5 posts)
+  lw.innerHTML = '';
+  sortedPosts.slice(1, 6).forEach((p, i) => {
+    const date = new Date(p.date).toLocaleDateString('de-DE');
+    lw.innerHTML += `
+      <div class="list-item" onclick="location.href='post.html?id=${p.id}'">
+        <div class="list-thumb ${thumbs[i % thumbs.length]}"></div>
+        <div class="list-body">
+          <div class="list-cat">${p.category || 'Wirtschaft'}</div>
+          <div class="list-title">${p.title}</div>
+          <div class="list-meta">${p.author || 'Redaktion'} · ${date}</div>
+        </div>
+      </div>
+    `;
+  });
+  
+  // Sidebar recent (first 4 posts)
+  sr.innerHTML = '';
+  sortedPosts.slice(0, 4).forEach((p, i) => {
+    const date = new Date(p.date).toLocaleDateString('de-DE');
+    sr.innerHTML += `
+      <div class="side-item" onclick="location.href='post.html?id=${p.id}'">
+        <div class="side-thumb ${thumbs[i % thumbs.length]}"></div>
+        <div class="side-info">
+          <div class="side-cat">${p.category || 'Wirtschaft'}</div>
+          <div class="side-title">${p.title}</div>
+          <div class="side-date">${date}</div>
+        </div>
+      </div>
+    `;
   });
 }
+
+async function getPostsFromGist() {
+  try {
+    console.log('Fetching from Gist ID:', GIST_ID);
+    
+    const rawUrl = `https://gist.githubusercontent.com/Hamzamain-spec/${GIST_ID}/raw/posts.json`;
+    const response = await fetch(rawUrl);
+    
+    if (response.ok) {
+      const allPosts = await response.json();
+      console.log('All posts from Gist:', allPosts);
+      
+      // Filter by site name
+      const sitePosts = allPosts.filter(post => post.site === SITE_NAME);
+      console.log(`Found ${sitePosts.length} posts for site: ${SITE_NAME}`);
+      
+      return sitePosts;
+    } else {
+      console.error('Failed to fetch from Gist:', response.status);
+      return [];
+    }
+  } catch (error) {
+    console.error('Error loading posts:', error);
+    return [];
+  }
+}
+
+// Load posts when page loads
 loadPosts();
+
+// Auto-refresh every 30 seconds
+setInterval(loadPosts, 30000);
 </script>
 </body>
 </html>
